@@ -26,8 +26,11 @@ export function setupMirage(hooks = self, { createServer, config }) {
           ' calling setupMirage()',
       );
     }
-
-    this.server = await createServer(config ?? {});
+    const store = this.owner.lookup("service:store");
+    this.server = await createServer(config ?? {}, store);
+    if (this.server.start) {
+      await this.server.start();
+    }
   });
 
   hooks.afterEach(function () {
